@@ -17,4 +17,4 @@ This repo will serve as the prototype how in the style of [Ben Hunter](http://mo
 3. ?
 
 
-Fork/clone the repo and see [code.R] for an simple quick example how this can be accomplished.
+Fork/clone the repo and see the [code](code.R) for an simple quick example how this can be accomplished.
