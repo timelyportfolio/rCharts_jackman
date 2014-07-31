@@ -52,6 +52,12 @@ scatterPlot$set(
   )
   , height = 400
   , width = 800
+  #, margins = list (
+  #  top = 
+  #  ,bottom = 
+  #  ,left = 
+  #  ,right =
+  #)
 )
 
 scatterPlot
@@ -69,8 +75,14 @@ longPlot$set(
     ,orient = "records"
     , json = F
   )
-  , height = 400
+  , height = 1000
   , width = 800
+  #, margins = list (
+  #  top = 
+  #  ,bottom = 
+  #  ,left = 
+  #  ,right =
+  #)  
 )
 
 longPlot
