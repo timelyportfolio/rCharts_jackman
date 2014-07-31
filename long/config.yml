@@ -1,0 +1,12 @@
+long:
+  jshead:
+    - js/d3.v3.js
+    - js/d3.tip.v0.6.3.js
+  css:
+    - css/long.css
+  cdn:
+    jshead:
+      - http://d3js.org/d3.v3.js
+      - http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js
+    css:
+      - http://timelyportfolio.github.io/rCharts_jackman/long/css/long.css

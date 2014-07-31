@@ -57,3 +57,20 @@ scatterPlot$set(
 scatterPlot
 
 
+
+
+longPlot <- rCharts$new()
+longPlot$setLib( "long")
+
+
+longPlot$set(
+  data = to_json(
+    estimates
+    ,orient = "records"
+    , json = F
+  )
+  , height = 400
+  , width = 800
+)
+
+longPlot
