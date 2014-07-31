@@ -1,4 +1,4 @@
-## Make Simon Jackman Post Reproducible with rCharts
+### Make Simon Jackman Post Reproducible with rCharts
 
 When I spotted Simon Jackman's post [ideal point graphics, via d3](http://jackman.stanford.edu/blog/?p=2888), I commented:
 
