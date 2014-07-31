@@ -1,0 +1,213 @@
+<script>
+
+  var opts = {{{ chartParams }}};
+  
+  var margin = opts.margin ? opts.margin : {top: 56, right: 18, bottom: 28, left: 18};
+  var width = (opts.width ? opts.width : 1000) - margin.left - margin.right;
+  var height = (opts.height ? opts.height : 700) - margin.top - margin.bottom;
+  
+  var dataset = opts.data.pointData;
+  var demLoess = opts.data.demLoess;
+  var repLoess = opts.data.repLoess;
+  
+  var formatTime = d3.time.format("%d %b %Y %H:%M");
+  var lastModified = new Date();
+  var timeStamp = formatTime(lastModified);
+  
+  
+  var svg = d3.select("#" + opts.id).append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  
+  var tip = d3.tip()
+      .attr('class', 'd3-tip')
+      .offset([-10, 0])
+      .html(function(d) {
+    return "<span>" + d.legisNames + "</span>";
+      }
+  	 );
+  
+  svg.call(tip);
+  
+     
+   colorValue = function(d) {
+       return d.party; },
+   color = d3.scale.ordinal()
+   .domain(["R","D","I"])
+   .range(["red","blue","green"]);
+   
+   var xmin = d3.min(dataset, function(d) { return +d.x; });
+   var xmax = d3.max(dataset, function(d) { return +d.x; });
+   var xrange = xmax-xmin;
+  
+   var ymin = d3.min(dataset, function(d) { return +d.y; });
+   var ymax = d3.max(dataset, function(d) { return +d.y; });
+   var yrange = ymax - ymin;
+   var yup = ymax + (.015 * yrange);
+   var ylo = ymin - (.015 * yrange);
+   console.log(ymin); console.log(ymax); console.log(yrange);
+   console.log(ylo);
+   console.log(yup);
+  
+   var xScale = d3.scale.linear()
+       .range([0, width])
+       .domain([xmin - .015*xrange, xmax + .015*xrange]);
+  
+   var yScale = d3.scale.linear()
+       .range([height, 0])
+       .domain([ymin - .015*yrange, ymax + .015*yrange]);
+  
+   console.log(yScale);
+  
+   var yTickValues = d3.range( -2.0, 1.6, 0.5 );
+   var xTickValues = d3.range(20,91,10);
+   
+   // axes grids
+  
+   var formatAsPercentage = d3.format("");
+  
+   var xAxis = d3.svg.axis()
+       .scale(xScale)
+       .tickSize(0, 0, 0)
+       .tickValues(xTickValues)
+       .tickFormat(formatAsPercentage)
+       .orient("bottom");
+  
+   var xAxis2 = d3.svg.axis()
+       .scale(xScale)
+       .tickSize(0, 0, 0)
+       .tickValues(xTickValues)
+       .tickFormat(formatAsPercentage)
+       .orient("top");
+   
+   var yAxis = d3.svg.axis()
+       .scale(yScale)
+       .tickSize(0, 0, 0)
+       .tickValues(yTickValues)
+       .tickFormat(d3.format("> .2f"))
+       .orient("left");
+   
+   var y2Axis = d3.svg.axis()
+       .scale(yScale)
+       .tickSize(0, 0, 0)
+       .tickValues(yTickValues)
+       .tickFormat(d3.format("> .2f"))
+       .orient("right");
+   	   
+   svg.append("g")
+       .attr("class", "x.axis")
+       .attr("transform", "translate(10," + (height - 6) + ")")
+       .style("font-size", "14px")
+       .call(xAxis);
+   
+   svg.append("g")
+       .attr("class", "x.axis")
+       .attr("transform", "translate(10,6)")
+       .style("font-size", "14px")
+       .call(xAxis2)
+   
+   // svg.append("g")
+   //     .attr("class", "y.axis") 
+   //     .attr("transform", "translate(8,-6)")
+   //     .call(yAxis);
+   
+   // svg.append("g")
+   //     .attr("class", "y.axis")
+   //     .attr("transform", "translate(" + (width - 8) + ",-6)") 
+   //     .call(y2Axis);
+  
+   function make_x_grid(){
+       return d3.svg.axis()
+     .scale(xScale)
+     .orient("bottom")
+   }
+  
+   function make_y_grid(){
+       return d3.svg.axis()
+     .scale(yScale)
+     .orient("left")
+   }
+   
+   svg.append("g")         
+              .attr("class", "grid")
+              .style("opacity",0.15)
+              .call(make_x_grid()
+    	     .tickSize(height, 0, 0)
+    	     .tickFormat("")
+    	     );
+   
+   svg.append("g")         
+             .attr("class", "grid")
+             .style("opacity",0.15)
+             .call(make_y_grid()
+       .tickSize(-width, 0, 0)
+       .tickFormat("")
+      );
+  
+   var loessLine = d3.svg.line()
+       .x(function(d) { return xScale(d.x); })
+       .y(function(d) { return yScale(d.yhat); });
+  
+   svg.append("path")
+       .datum(demLoess)
+       .attr("class", "line")
+       .attr("d",loessLine);
+  
+   svg.append("path")
+       .datum(repLoess)
+       .attr("class", "line")
+       .attr("d",loessLine);
+  
+   // plot data
+   svg.selectAll("rect")
+   .data(dataset)
+   .enter()
+   .append("rect")
+         .attr("class","rect")
+   .attr("x",function(d){
+       return xScale(d.x) + 4.5;
+       })
+    .attr("y",function(d){
+       return yScale(d.y) + 4.5;
+       })
+         .attr("width",9)
+   .attr("height",9)
+   .style("opacity",.25)
+         .style("fill",function(d) { return color(colorValue(d)); } )
+   .on('mouseover', 
+       function(d) {
+     tip.show(d);
+     d3.select(this).style("opacity",.85);
+          })
+         .on('mouseout', 
+       function(d) { 
+     d3.select(this).style("opacity",.25);
+     tip.hide(d);
+       }
+      )
+  
+   // labelling
+   svg.append("text")
+       .attr("x",width/2)
+       .attr("y",height + 26)
+       .text("Obama share of presidential vote, 2012 election (%)")
+       .attr("text-anchor", "middle")
+       .style("font-size", "16px");
+  
+   // titling
+   svg.append("text")
+       .attr("class", "title")
+       .attr("x", -12)
+       .attr("y", -32)
+       .text("Ideal Points, 113th House, by Obama 2012 vote in district");
+   
+   svg.append("text")
+       .attr("class", "credit")
+       .attr("x",-10)
+       .attr("y",-15)
+             .attr("text-anchor","start")
+       .text("Computed by Simon Jackman " + timeStamp + " http://jackman.stanford.edu");
+
+</script>

@@ -27,3 +27,24 @@ plotData <- read.csv(
   ,stringsAsFactors = F
 )
 
+
+scatterPlot <- rCharts$new()
+scatterPlot$setLib( "scatter")
+
+
+scatterPlot$set(
+  data = lapply(
+    list(
+      pointData = plotData
+      , repLoess = repLoess
+      , demLoess = demLoess
+    ),
+    to_json, orient = "records", json = F
+  )
+  , height = 400
+  , width = 800
+)
+
+scatterPlot
+
+
