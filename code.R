@@ -7,6 +7,11 @@ library(rCharts)
 # from the Rdata file
 # I will just read in the csv files from the html
 
+# scatter has three data sets:
+#   demLoess
+#   repLoes
+#   plotData  
+
 demLoess <- read.csv(
   "demLoess.csv"
   ,stringsAsFactors = F
@@ -17,15 +22,19 @@ repLoess <- read.csv(
   ,stringsAsFactors = F
 )
 
+plotData <- read.csv(
+  "plotData.csv"
+  ,stringsAsFactors = F
+)
+
+# long has one data set:
+#  estimates
 estimates <- read.csv(
   "estimates.csv"
   ,stringsAsFactors = F
 )
 
-plotData <- read.csv(
-  "plotData.csv"
-  ,stringsAsFactors = F
-)
+
 
 
 scatterPlot <- rCharts$new()
